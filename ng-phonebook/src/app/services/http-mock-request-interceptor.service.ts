@@ -17,14 +17,18 @@ const urls = [
         method: 'POST',
         getData: (request, id) => {
             request.body.id = storage.data.length + 1;
-            // storage.data.push(request.body)
+            storage.data.push(request.body)
             return request.body
         }
     }, {
         url: "http://localhost:8080/api/contact/#",
-        method: 'GET',
+        method: 'DELETE',
         getData: (request, id) => {
-            return storage.data.filter(item => item.id+"" === id)[0]
+            console.log('request', request);
+            console.log('id', id);
+            let index = storage.data.findIndex(item => item.id+"" === id);
+            storage.data.splice(index, 1);
+            return storage.data;
         }
     }, {
         url: "http://localhost:8080/api/contact/#",

@@ -1,4 +1,7 @@
 <app-contact-form></app-contact-form>
 <div *ngFor="let contact of this.contacts">
+  <button (click)="deleteContact(contact)">Delete</button>
   {{contact.firstName}}, {{contact.lastName}}, {{contact.email}}
+  <button (click)="editContact(contact)">Edit</button>
 </div>
+

@@ -21,7 +21,22 @@ export class ContactsComponent implements OnInit {
 
   private readAll() {
     return this.contactService.loadAll().subscribe((list) => {
+      console.log('list', list);
       this.contacts = list;
     });
   }
+
+  editContact(contact) {
+    console.log(contact)
+    this.contactService.editContact(contact);
+  }
+
+  deleteContact(contact) {
+    console.log(contact);
+    this.contactService.deleteContact(contact).subscribe((data) => {
+        console.log(data);
+        this.readAll();
+    });
+  }
+
 }

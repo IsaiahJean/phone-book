@@ -1,5 +1,5 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {throwError} from "rxjs";
+import {Subject, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {Contact} from "../components/contact-list/contact";
@@ -12,6 +12,7 @@ const httpOptions = {
 
 @Injectable()
 export class ContactService {
+    editContactSubject = new Subject<Contact>();
 
     constructor(private http: HttpClient) {
     }
@@ -48,6 +49,19 @@ export class ContactService {
     getById(id) {
         return this.http.get<Contact>(this.serverUrl + '/' + id, httpOptions)
             .pipe(catchError(ContactService.handleError));
+    }
+
+    deleteContact(contact: Contact) {
+        return this.http.delete<Contact[]>(this.serverUrl + '/' + contact.id, httpOptions)
+            .pipe(catchError(ContactService.handleError));
+    }
+
+    editContact(contact: Contact) {
+        this.editContactSubject.next(contact);
+    }
+
+    getEditContact() {
+        return this.editContactSubject.asObservable();
     }
 
 }

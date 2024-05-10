@@ -12,11 +12,16 @@ export class ContactFormComponent implements OnInit {
     model = <Contact> {};
     submitted = false;
     btnName = 'Submit';
+    isEdit = false;
 
     constructor(private contactService: ContactService) {
     }
 
     ngOnInit(): void {
+        this.contactService.getEditContact().subscribe((contact) => {
+            this.model = contact;
+            this.isEdit = true;
+        });
     }
 
     createNew() {
@@ -26,13 +31,23 @@ export class ContactFormComponent implements OnInit {
     onSubmit(contactForm: NgForm) {
         this.submitted = true;
 
-        this.contactService.postContact(this.model)
-            .subscribe(contact => {
-                console.log('object saved', contact);
+        if (this.isEdit === false) {
+            this.contactService.postContact(this.model)
+                .subscribe(contact => {
+                    console.log('object saved', contact);
+                    this.model = this.createNew();
+                    this.submitted = false;
+                    contactForm.resetForm();
+                }, err => {alert(err)});
+        } else {
+            this.contactService.putContact(this.model).subscribe( contact => {
+                console.log('object updated', contact);
                 this.model = this.createNew();
                 this.submitted = false;
                 contactForm.resetForm();
-            });
+                this.isEdit = false;
+            })
+        }
 
         console.log('submitted');
     }
